@@ -93,4 +93,4 @@ const update = (req, res) => {
 
 
 module.exports = {create, index, show, destroy, update };
-``
+
