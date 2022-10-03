@@ -1,6 +1,7 @@
 const Comment = require('../Models/comment');
 const Blog = require('../Models/blog');
 
+// add a comment to blog
 const create = (req, res) => {
 
   let comment = new Comment({
@@ -22,6 +23,7 @@ const create = (req, res) => {
     })
 }
 
+// list all comments in a blog
 const index = (req, res) => {
   Blog.findById(req.params.id, 'comments')
     .then(response => {
@@ -36,6 +38,7 @@ const index = (req, res) => {
     })
 }
 
+// delete comment from blog
 const destroy = (req, res) => {
 
   Blog.findByIdAndUpdate(req.params.id, { $pull: { comments: {'content': req.body.comment} } })

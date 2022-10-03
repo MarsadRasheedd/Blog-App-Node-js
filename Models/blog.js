@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema
 
-const Comment = require('./comment');
- const {CharacterSchema} = require(__dirname +'/comment.js').schema;
+const { Comment } = require(__dirname + '/comment.js').schema;
+const paginate = require('mongoose-paginate-v2');
 
 const blogSchema = new Schema({
   title: {
@@ -15,10 +15,11 @@ const blogSchema = new Schema({
     type: String
   },
   comments: {
-    type: [CharacterSchema]
+    type: [Comment]
   },
-}, {timestamps: true})
+}, { timestamps: true })
 
+blogSchema.plugin(paginate);
 const Blog = mongoose.model('Blog', blogSchema);
 
 module.exports = Blog;

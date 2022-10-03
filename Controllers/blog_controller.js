@@ -22,18 +22,33 @@ const create = (req, res) => {
 
 // show all blogs
 const index = (req, res) => {
-  Blog.find({})
-    .then(response => {
-      res.json({
-        date: response,
-        message: "All blogs"
+  if (req.query.page && req.query.limit) {
+    Blog.paginate({}, { page: req.query.page, limit: req.query.limit })
+      .then(response => {
+        res.json({
+          date: response,
+          message: "Paginted blogs."
+        })
       })
-    })
-    .catch(error => {
-      res.json({
-        message: 'An error occurred.'
+      .catch(error => {
+        res.json({
+          message: 'An error occurred.'
+        })
       })
-  })
+  } else {
+    Blog.find({})
+      .then(response => {
+        res.json({
+          date: response,
+          message: "All blogs"
+        })
+      })
+      .catch(error => {
+        res.json({
+          message: 'An error occurred.'
+        })
+      })
+  }
 }
 
 // show a blog
