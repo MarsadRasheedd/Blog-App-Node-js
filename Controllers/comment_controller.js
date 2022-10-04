@@ -1,5 +1,6 @@
 const Comment = require('../Models/comment');
 const Blog = require('../Models/blog');
+const response = require('./helper');
 
 // add a comment to blog
 const create = (req, res) => {
@@ -12,29 +13,21 @@ const create = (req, res) => {
     {$push: {comments: comment }}
     )
     .then(response => {
-      res.json({
-        message: "Comment added successfully!!"
-      })
+      response(res, "Comment added successfully.");
     })
     .catch(error => {
-      res.json({
-        message: "An error occurred.."
-      })
+      response(res, "An error occured.");
     })
 }
 
 // list all comments in a blog
 const index = (req, res) => {
   Blog.findById(req.params.id, 'comments')
-    .then(response => {
-      res.json({
-        data: response
-      });
+    .then(r => {
+      response(res, "Blog comments", r);
     })
     .catch(error => {
-      res.json(
-        error.message
-      )
+      response(res, "An error occured.");
     })
 }
 
@@ -43,16 +36,11 @@ const destroy = (req, res) => {
 
   Blog.findByIdAndUpdate(req.params.id, { $pull: { comments: {'content': req.body.comment} } })
     .then(response => {
-      res.json({
-        message: "Comment deleted successfully."
-      })
+      response(res, "Comment deleted successfully.");
     })
     .catch(error => {
-      res.json({
-        message: "An error occurred."
-      })
+      response(res, "An error occured.");
     })
 }
-
 
 module.exports = {create, index, destroy}

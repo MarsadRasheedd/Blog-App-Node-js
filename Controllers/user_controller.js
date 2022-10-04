@@ -1,4 +1,5 @@
 const User = require('../Models/user');
+const response = require('./helper');
 const bcryt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
@@ -8,9 +9,7 @@ dotenv.config();
 const create = (req, res, next) => {
   bcryt.hash(req.body.password, 10, function (error, hashedPassword) {
     if (error) {
-      res.json({
-        message: error
-      })
+      response(res, error.message);
     }
 
   let user = new User({
@@ -25,15 +24,11 @@ const create = (req, res, next) => {
   }
 
     user.save()
-      .then(response => {
-        res.json({
-          message: "User created successfully."
-        })
+      .then(r => {
+        response(res, "User created successfully.");
       })
     .catch(error => {
-      res.json({
-        message: "An error occurred"
-      });
+      response(res, "An error occurred.");
     })
   })
 }
@@ -45,9 +40,7 @@ const login = (req, res, next) => {
       if (user) {
         bcryt.compare(req.body.password, user.password, function (error, result) {
           if (error) {
-            res.json({
-              message: error
-            });
+            response(res, error.message);
           }
 
           if (result) {
@@ -56,37 +49,28 @@ const login = (req, res, next) => {
               message: "User logged in successfully.",
               token
             });
+
           } else {
-            res.json({
-              message: "Password doesn't match."
-            });
+              response(res, "Password doesn't match.");
           }
         });
       } else {
-        res.json({
-          message: "No user found. Please check your email or password"
-        });
+          response(res, "No user match. Please check your email.");
       }
     })
     .catch(error => {
-      res.json({
-        message: "An error occurred."
-      });
+      response(res, "An error occurred.");
     })
 }
 
 // display all users.
 const index = (req, res, next) => {
   User.find({})
-    .then(response => {
-      res.json({
-        message: response
-      })
+    .then(r => {
+      response(res, "All users", r);
     })
     .catch(error => {
-      res.json({
-        message: "An error occurred."
-      });
+      response(res, "An error occurred.");
     });
 }
 

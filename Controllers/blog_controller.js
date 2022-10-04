@@ -1,5 +1,5 @@
 const Blog = require('../Models/blog');
-
+const response = require('./helper');
 // create blog
 const create = (req, res) => {
   let blog = new Blog({
@@ -9,14 +9,10 @@ const create = (req, res) => {
   });
 
   blog.save()
-    .then(response => {
-      res.json({
-        message: 'Blog uploaded successfully.',
-      })
+    .then(r => {
+      response(res, "Blog uploaded successfully.");
   }).catch(error => {
-      res.json({
-        message: 'An error occured.',
-      });
+      response(res, "An error occured.");
     })
 }
 
@@ -24,29 +20,19 @@ const create = (req, res) => {
 const index = (req, res) => {
   if (req.query.page && req.query.limit) {
     Blog.paginate({}, { page: req.query.page, limit: req.query.limit })
-      .then(response => {
-        res.json({
-          date: response,
-          message: "Paginted blogs."
-        })
+      .then(r => {
+        response(res, "Paginated Blogs", r);
       })
       .catch(error => {
-        res.json({
-          message: 'An error occurred.'
-        })
+        response(res, "An error occured.");
       })
   } else {
     Blog.find({})
-      .then(response => {
-        res.json({
-          date: response,
-          message: "All blogs"
-        })
+      .then(r => {
+        response(res, "All blogs", r);
       })
       .catch(error => {
-        res.json({
-          message: 'An error occurred.'
-        })
+        response(res, "An error occured.");
       })
   }
 }
@@ -55,15 +41,11 @@ const index = (req, res) => {
 const show = (req, res) => {
   let blogId = req.body.id
   Blog.findById(blogId)
-    .then(response => {
-      res.json({
-        data: response
-      });
+    .then(r => {
+      response(res, "Blog", r);
     })
     .catch(error => {
-      res.json({
-      message: 'An error occured.'
-    })
+      response(res, "An error occured.");
   })
 }
 
@@ -71,15 +53,11 @@ const show = (req, res) => {
 const destroy = (req, res) => {
   let blogId = req.body.id;
   Blog.findOneAndRemove({ _id: blogId })
-    .then(response => {
-      res.json({
-        message: "Blog deleted successfully."
-      });
+    .then(r => {
+      response(res, "Blog deleted successfully.");
     })
     .catch(error => {
-      res.json({
-        message: "An error occured."
-      });
+      response(res, "An error occured.");
     })
 }
 
@@ -94,18 +72,13 @@ const update = (req, res) => {
   }
 
   Blog.findByIdAndUpdate(blog_id, {$set: updated_blog })
-    .then(response => {
-      res.json({
-        message: "Blog updated successfully."
-      });
+    .then(r => {
+      response(res, "Blog updated successfully.");
     })
     .catch(error => {
-      res.json({
-        message: "An error occured."
-      });
+      response(res, "An error occured.");
     })
 }
-
 
 module.exports = {create, index, show, destroy, update };
 
